@@ -1,4 +1,4 @@
-# python train_net.py --config-file configs/semantic/train_semantic_large.yaml  --num-gpus 8 --eval-only   --dist-url 'tcp://127.0.0.1:56378'
+# python train_net.py --config-file configs/semantic/train_semantic_large.yaml  --num-gpus 8 
 
 _BASE_: ./maskformer2_R50_bs16_50ep.yaml
 MODEL:
