@@ -7,6 +7,7 @@ Reference: https://github.com/facebookresearch/Mask2Former/blob/main/mask2former
 
 import json
 import os
+from pathlib import Path
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.utils.file_io import PathManager
@@ -220,6 +221,6 @@ def register_all_ade20k_semantic(root):
             ignore_label=255,
         )
 
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/ade20k")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "ade20k"
 register_all_ade20k_panoptic(_root)
 register_all_ade20k_semantic(_root)

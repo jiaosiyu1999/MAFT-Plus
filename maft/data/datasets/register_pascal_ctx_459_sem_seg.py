@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -80,5 +81,5 @@ def register_all_ctx459(root):
 
 
         
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/pascal/VOCdevkit/VOC2010")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "pascal" / "VOCdevkit" / "VOC2010"
 register_all_ctx459(_root)

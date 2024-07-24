@@ -56,4 +56,4 @@ SOLVER:
   WEIGHT_DECAY_EMBED: 0.0
   WEIGHT_DECAY_NORM: 0.0
 
-OUTPUT_DIR: ./out/semantic/MAFT_Plus/ori
+OUTPUT_DIR: ./out/semantic/MAFT_Plus_large/ori

@@ -6,6 +6,7 @@ Reference: https://github.com/MendelXu/SAN/blob/main/san/data/datasets/register_
 """
 
 import os
+from pathlib import Path
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from .load_sem_seg import load_sem_seg
@@ -61,5 +62,5 @@ def register_all_coco_stuff_164k(root):
         )
 
 
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/coco/coco17")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "coco" / "coco17"
 register_all_coco_stuff_164k(_root)

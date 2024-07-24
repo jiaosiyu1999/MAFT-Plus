@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -75,5 +76,5 @@ def register_all_pascal21(root):
             gt_ext="png",
         )
         
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/pascal/VOCdevkit/VOC2012")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "pascal" / "VOCdevkit" / "VOC2012"
 register_all_pascal21(_root)

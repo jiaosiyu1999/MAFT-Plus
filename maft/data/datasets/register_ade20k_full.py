@@ -6,6 +6,7 @@ Reference: https://github.com/facebookresearch/Mask2Former/blob/main/mask2former
 """
 
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -61,5 +62,5 @@ def register_all_ade20k_847(root):
         )
 
 
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/ade20k")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "ade20k"
 register_all_ade20k_847(_root)

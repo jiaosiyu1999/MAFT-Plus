@@ -7,6 +7,7 @@ Reference: https://github.com/facebookresearch/Mask2Former/blob/main/mask2former
 
 import json
 import os
+from pathlib import Path
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.data.datasets import load_sem_seg
@@ -189,6 +190,6 @@ def register_all_coco_panoptic_annos_sem_seg(root):
         )
 
 
-_root = os.getenv("DETECTRON2_DATASETS", "datasets/coco/coco17")
+_root = Path(os.getenv("DETECTRON2_DATASETS", "datasets")) / "coco" / "coco17"
 register_all_coco_panoptic_annos_sem_seg(_root)
 
