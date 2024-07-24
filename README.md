@@ -75,7 +75,7 @@ datasets/
   ```
   python train_net.py --eval-only --config-file <CONFIG_FILE> --num-gpus <NUM_GPU> OUTPUT_DIR <OUTPUT_PATH> MODEL.WEIGHTS <TRAINED_MODEL_PATH>
   ```
-   For example, evaluate our pre-trained model:
+   For example, evaluate our pre-trained ```maftp-l``` model:
   ```
   # 1. Download MAFTP-Large.
   # 2. put it at `out/semantic/MAFT_Plus/maftp_l.pth`.
@@ -85,9 +85,13 @@ datasets/
   ```
 <span id="5"></span>
 - #### Training
-1.  **end to end training** requires 8*A100 GPUs and 12 hours, approximately:
+1.  **end to end training** requires 8*A100 GPUs and 14 hours, approximately:
 ```
+    # MAFT-Plus-Large (maftp-l)
     python train_net.py --config-file configs/semantic/train_semantic_large.yaml  --num-gpus 8
+
+    # MAFT-Plus-Base (maftp-b)
+    python train_net.py --config-file configs/semantic/train_semantic_base.yaml  --num-gpus 8
 ```
 
 <span id="6"></span>
