@@ -1,5 +1,24 @@
-# MAFT-Plus: Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation
-This is the official implementation of our conference paper : Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation (**ECCV 2024**).
+# 
+
+<div align="center">
+<h1> MAFT+ (ECCV 2024) </h1>
+<h3>Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation</h3>
+
+[Siyu Jiao](https://github.com/jiaosiyu1999)<sup>1,2</sup>,[Hongguang Zhu](https://github.com/KevinLight831)<sup>1,2</sup>,[Jiannan Huang](https://github.com/Rbrq03)<sup>1,3</sup>, [Yao Zhao](https://scholar.google.com/citations?user=474TbQYAAAAJ&hl=zh-CN&oi=ao)<sup>1,2</sup>, [Yunchao Wei](https://weiyc.github.io/)<sup>1,2</sup>, [Humphrey Shi](https://scholar.google.com/citations?user=WBvt5A8AAAAJ&hl=en)<sup>3,4</sup>,
+
+<sup>1</sup> Beijing Jiaotong University, <sup>2</sup> Pengcheng Lab, <sup>3</sup> Georgia Institute of Technology, <sup>4</sup> Picsart AI Research (PAIR)
+
+
+[[`Paper`](https://arxiv.org/pdf/2408.00744)] 
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-panoptic-segmentation-on)](https://paperswithcode.com/sota/open-vocabulary-panoptic-segmentation-on?p=collaborative-vision-text-representation)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-semantic-segmentation-on-3)](https://paperswithcode.com/sota/open-vocabulary-semantic-segmentation-on-3?p=collaborative-vision-text-representation)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-semantic-segmentation-on-2)](https://paperswithcode.com/sota/open-vocabulary-semantic-segmentation-on-2?p=collaborative-vision-text-representation)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-semantic-segmentation-on-7)](https://paperswithcode.com/sota/open-vocabulary-semantic-segmentation-on-7?p=collaborative-vision-text-representation)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-semantic-segmentation-on-5)](https://paperswithcode.com/sota/open-vocabulary-semantic-segmentation-on-5?p=collaborative-vision-text-representation)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/collaborative-vision-text-representation/open-vocabulary-semantic-segmentation-on-1)](https://paperswithcode.com/sota/open-vocabulary-semantic-segmentation-on-1?p=collaborative-vision-text-representation)
+
+</div>
 
 <div align="center">
 <img src="resources/vis1.gif" width="48%">
@@ -8,7 +27,8 @@ This is the official implementation of our conference paper : Collaborative Visi
 
 ## Introduction
 
-Pre-trained vision-language models, *e.g.* CLIP, have been increasingly used to address the challenging Open-Vocabulary Segmentation (OVS) task, benefiting from their well-aligned vision-text embedding space. Typical solutions involve either freezing CLIP during training to unilaterally maintain its zero-shot capability, or fine-tuning CLIP vision encoder to achieve perceptual sensitivity to local regions.  However, few of them incorporate vision-text collaborative optimization. Based on this, we propose the Content-Dependent Transfer to adaptively enhance each text embedding by interacting with the input image, which presents a parameter-efficient way to optimize the text representation. Besides, we additionally introduce a Representation Compensation strategy, reviewing the original CLIP-V representation as compensation to maintain the zero-shot capability of CLIP. In this way, the vision and text representation of CLIP are optimized collaboratively, enhancing the alignment of the vision-text feature space. To the best of our knowledge, we are the first to establish the collaborative vision-text optimizing mechanism within the OVS field. Extensive experiments demonstrate our method achieves superior performance on popular OVS benchmarks. In open-vocabulary semantic segmentation, our method outperforms the previous state-of-the-art approaches by +0.5, +2.3, +3.4, +0.4 and +1.1 mIoU, respectively on A-847, A-150, PC-459, PC-59 and PAS-20. Furthermore, in a panoptic setting on ADE20K, we achieve the performance of 27.1 PQ, 73.5 SQ, and 32.9 RQ.
+This work is an enhanced version of our NeurIPS paper [MAFT](https://arxiv.org/abs/2310.00240).   
+Pre-trained vision-language models, *e.g.* CLIP, have been increasingly used to address the challenging Open-Vocabulary Segmentation (OVS) task, benefiting from their well-aligned vision-text embedding space. Typical solutions involve either freezing CLIP during training to unilaterally maintain its zero-shot capability, or fine-tuning CLIP vision encoder to achieve perceptual sensitivity to local regions.  However, few of them incorporate vision-text collaborative optimization. Based on this, we propose the [Content-Dependent Transfer](https://github.com/jiaosiyu1999/MAFT-Plus/blob/master/maft/modeling/maft/content_dependent_transfer.py) to adaptively enhance each text embedding by interacting with the input image, which presents a parameter-efficient way to optimize the text representation. Besides, we additionally introduce a [Representation Compensation](https://github.com/jiaosiyu1999/MAFT-Plus/blob/master/maft/modeling/maft/representation_compensation.py) strategy, reviewing the original CLIP-V representation as compensation to maintain the zero-shot capability of CLIP. In this way, the vision and text representation of CLIP are optimized collaboratively, enhancing the alignment of the vision-text feature space. To the best of our knowledge, we are the first to establish the collaborative vision-text optimizing mechanism within the OVS field. Extensive experiments demonstrate our method achieves superior performance on popular OVS benchmarks. In open-vocabulary semantic segmentation, our method outperforms the previous state-of-the-art approaches by +0.5, +2.3, +3.4, +0.4 and +1.1 mIoU, respectively on A-847, A-150, PC-459, PC-59 and PAS-20. Furthermore, in a panoptic setting on ADE20K, we achieve the performance of 27.1 PQ, 73.5 SQ, and 32.9 RQ.
 
 ![](resources/framework_6x.png)
 
