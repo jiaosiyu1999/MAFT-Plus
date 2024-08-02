@@ -91,7 +91,7 @@ datasets/
 - #### Evaluation 
 
   <span id="4"></span>
-  - evaluate trained model on validation sets of all datasets.
+  evaluate trained model on validation sets of all datasets.
   ```
   python train_net.py --eval-only --config-file <CONFIG_FILE> --num-gpus <NUM_GPU> OUTPUT_DIR <OUTPUT_PATH> MODEL.WEIGHTS <TRAINED_MODEL_PATH>
   ```
@@ -105,7 +105,10 @@ datasets/
   ```
 <span id="5"></span>
 - #### Training
-1.  **end to end training** requires 8*A100 GPUs and 14 hours, approximately:
+
+  <span id="4"></span>
+  **end to end training** requires 8*A100 GPUs and 14 hours, approximately:
+
 ```
     # MAFT-Plus-Large (maftp-l)
     python train_net.py --config-file configs/semantic/train_semantic_large.yaml  --num-gpus 8
@@ -115,8 +118,17 @@ datasets/
 ```
 
 <span id="6"></span>
+### Cite 
 
-
+If you find it helpful, you can cite our paper in your work.
+```
+@inproceedings{jiao2024collaborative,
+  title={Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation},
+  author={Jiao, Siyu and Zhu, Hongguang and Huang, Jiannan and Zhao, Yao and Wei, Yunchao and Humphrey, Shi},
+  booktitle={European Conference on Computer Vision},
+  year={2024},
+}
+```
 
 ### Acknowledgement
 [Mask2Former](https://github.com/facebookresearch/Mask2Former)
