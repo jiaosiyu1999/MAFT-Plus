@@ -1,0 +1,60 @@
+# python train_net.py --config-file configs/semantic/demo.yaml  --num-gpus 8 
+
+_BASE_: ./maskformer2_R50_bs16_50ep.yaml
+MODEL:
+  WEIGHTS: out/semantic/MAFT_Plus/maftp_l.pth
+  META_ARCHITECTURE: "MAFT_Plus_DEMO"
+  SEM_SEG_HEAD:
+    NAME: "FCCLIPHead"
+    NUM_CLASSES: 171
+  # backbone part.
+  BACKBONE:
+    NAME: "CLIP"
+  PIXEL_MEAN: [122.7709383, 116.7460125, 104.09373615]
+  PIXEL_STD: [68.5005327, 66.6321579, 70.32316305]
+  FC_CLIP:
+    CLIP_MODEL_NAME: "convnext_large_d_320"  
+    CLIP_PRETRAINED_WEIGHTS: "laion2b_s29b_b131k_ft_soup" 
+    EMBED_DIM: 768
+    GEOMETRIC_ENSEMBLE_ALPHA: -1.
+    GEOMETRIC_ENSEMBLE_BETA: -1.
+  MASK_FORMER:
+    NUM_OBJECT_QUERIES: 100
+    TEST:
+      SEMANTIC_ON: True
+      INSTANCE_ON: False
+      PANOPTIC_ON: False
+      OBJECT_MASK_THRESHOLD: 0.0
+  rc_weights: 0.1
+
+INPUT:
+  DATASET_MAPPER_NAME: "mask_former_semantic" # mask_former_semantic coco_panoptic_lsj
+
+DATASETS:
+  TRAIN: ("openvocab_coco_2017_train_stuff_sem_seg",)  #  openvocab_coco_2017_train_panoptic_with_sem_seg
+  TEST: ("openvocab_pascal20_sem_seg_val", "openvocab_ade20k_full_sem_seg_val", 'openvocab_pascal_ctx459_sem_seg_val', 'openvocab_pascal_ctx59_sem_seg_val', 'openvocab_ade20k_panoptic_val') 
+
+SOLVER:
+  IMS_PER_BATCH: 8
+  BASE_LR: 0.0001
+  # BASE_LR_END: 0.0
+  BIAS_LR_FACTOR: 1.0
+  CHECKPOINT_PERIOD: 50000000
+  MAX_ITER: 55000
+
+  LR_SCHEDULER_NAME: WarmupPolyLR
+  MOMENTUM: 0.9
+  NESTEROV: false
+  OPTIMIZER: ADAMW
+  POLY_LR_CONSTANT_ENDING: 0.0
+  POLY_LR_POWER: 0.9
+  REFERENCE_WORLD_SIZE: 0
+  WARMUP_FACTOR: 1.0
+  WARMUP_ITERS: 0
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 2.0e-05
+  WEIGHT_DECAY_BIAS: null
+  WEIGHT_DECAY_EMBED: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+
+OUTPUT_DIR: ./out/semantic/MAFT_Plus_large/ori
