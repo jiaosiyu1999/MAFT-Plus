@@ -79,7 +79,6 @@ datasets/
 
 ### Usage
 
-
 - #### Pretrained Weights
 
   |Model|A-847| A-150| PC-459| PC-59| PAS-20 |Weights|
@@ -95,7 +94,7 @@ datasets/
   ```
   python train_net.py --eval-only --config-file <CONFIG_FILE> --num-gpus <NUM_GPU> OUTPUT_DIR <OUTPUT_PATH> MODEL.WEIGHTS <TRAINED_MODEL_PATH>
   ```
-   For example, evaluate our pre-trained ```maftp-l``` model:
+   For example, evaluate our pre-trained ```maftp_l.pth``` model:
   ```
   # 1. Download MAFTP-Large.
   # 2. put it at `out/semantic/MAFT_Plus/maftp_l.pth`.
@@ -116,7 +115,22 @@ datasets/
     # MAFT-Plus-Base (maftp-b)
     python train_net.py --config-file configs/semantic/train_semantic_base.yaml  --num-gpus 8
 ```
-
+- #### Inference Demo with Pre-trained Models
+  We provide ```demo/demo.py``` that is able to demo builtin configs. Run it with: 
+  ```
+  python demo/demo.py \
+    --input input1.jpg input2.jpg \
+    [--other-options]
+    --opts MODEL.WEIGHTS /path/to/checkpoint_file
+  ```
+   For example, evaluate our pre-trained ```maftp_l.pth``` model:
+  ```
+  # 1. Download MAFTP-Large.
+  # 2. put it at `out/semantic/MAFT_Plus/maftp_l.pth`.
+  # 3. run demo:
+    python demo/demo.py  --input im.png
+  ```
+  
 <span id="6"></span>
 ### Cite 
 
