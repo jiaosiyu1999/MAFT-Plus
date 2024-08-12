@@ -1,7 +1,7 @@
 # 
 
 <div align="center">
-<h1> MAFT+ (ECCV 2024) </h1>
+<h1> MAFT+ (ECCV 2024 oral) </h1>
 <h3>Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation</h3>
 
 [Siyu Jiao](https://github.com/jiaosiyu1999)<sup>1,2</sup>,[Hongguang Zhu](https://github.com/KevinLight831)<sup>1,2</sup>,[Jiannan Huang](https://github.com/Rbrq03)<sup>1,3</sup>, [Yao Zhao](https://scholar.google.com/citations?user=474TbQYAAAAJ&hl=zh-CN&oi=ao)<sup>1,2</sup>, [Yunchao Wei](https://weiyc.github.io/)<sup>1,2</sup>, [Humphrey Shi](https://scholar.google.com/citations?user=WBvt5A8AAAAJ&hl=en)<sup>3,4</sup>,
