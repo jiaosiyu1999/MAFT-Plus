@@ -57,37 +57,11 @@ class MAFT_Plus(nn.Module):
         panoptic_on: bool,
         instance_on: bool,
         test_topk_per_image: int,
-        # FC-CLIP
-        geometric_ensemble_alpha: float,
-        geometric_ensemble_beta: float,
-        ensemble_on_valid_mask: bool,
+        # MAFT
         rc_weights,
         cdt_params,
     ):
-        """
-        Args:
-            backbone: a backbone module, must follow detectron2's backbone interface
-            sem_seg_head: a module that predicts semantic segmentation from backbone features
-            criterion: a module that defines the loss
-            num_queries: int, number of queries
-            object_mask_threshold: float, threshold to filter query based on classification score
-                for panoptic segmentation inference
-            overlap_threshold: overlap threshold used in general inference for panoptic segmentation
-            metadata: dataset meta, get `thing` and `stuff` category names for panoptic
-                segmentation inference
-            size_divisibility: Some backbones require the input height and width to be divisible by a
-                specific integer. We can use this to override such requirement.
-            sem_seg_postprocess_before_inference: whether to resize the prediction back
-                to original input size before semantic segmentation inference or after.
-                For high-resolution dataset like Mapillary, resizing predictions before
-                inference will cause OOM error.
-            pixel_mean, pixel_std: list or tuple with #channels element, representing
-                the per-channel mean and std to be used to normalize the input image
-            semantic_on: bool, whether to output semantic segmentation prediction
-            instance_on: bool, whether to output instance segmentation prediction
-            panoptic_on: bool, whether to output panoptic segmentation prediction
-            test_topk_per_image: int, instance segmentation parameter, keep topk instances per image
-        """
+
         super().__init__()
         self.backbone = backbone
         self.backbone_t = backbone_t
@@ -117,25 +91,17 @@ class MAFT_Plus(nn.Module):
 
         # FC-CLIP args
         self.mask_pooling = MaskPooling()
-        self.geometric_ensemble_alpha = geometric_ensemble_alpha
-        self.geometric_ensemble_beta = geometric_ensemble_beta
-        self.ensemble_on_valid_mask = ensemble_on_valid_mask
-
         self.train_text_classifier = None
         self.test_text_classifier = None
         self.void_embedding = nn.Embedding(1, backbone.dim_latent) # use this for void
 
         _, self.train_num_templates, self.train_class_names = self.prepare_class_names_from_metadata(train_metadata, train_metadata)
-        # self.category_overlapping_mask, self.test_num_templates, self.test_class_names = self.prepare_class_names_from_metadata(test_metadata, train_metadata)
 
-
-
-        self.cdt = ContentDependentTransfer(d_model = cdt_params[0], nhead = cdt_params[1], )
+        self.cdt = ContentDependentTransfer(d_model = cdt_params[0], nhead = cdt_params[1], panoptic_on = panoptic_on)
         self.ma_loss = MA_Loss()  # BCELoss BCEWithLogitsLoss SmoothL1Loss
         self.rc_loss = Representation_Compensation()
         self.rc_weights = rc_weights
 
-                
         self._freeze()
         self.train_dataname = None
         self.test_dataname = None
@@ -161,7 +127,6 @@ class MAFT_Plus(nn.Module):
         for name, param in self.named_parameters():
             if param.requires_grad == True and 'sem_seg_head' not in name:
                 print(name, param.requires_grad)
-        # name['xxx']
 
     def prepare_class_names_from_metadata(self, metadata, train_metadata):
         def split_labels(x):
@@ -180,10 +145,9 @@ class MAFT_Plus(nn.Module):
             class_names = split_labels(metadata.thing_classes)
             train_class_names = split_labels(train_metadata.thing_classes)
         train_class_names = {l for label in train_class_names for l in label}
-        # print('train_class_names2', train_class_names)
         category_overlapping_list = []
         for test_class_names in class_names:
-            is_overlapping = not set(train_class_names).isdisjoint(set(test_class_names)) # 两个集合是否有相同元素
+            is_overlapping = not set(train_class_names).isdisjoint(set(test_class_names)) 
             category_overlapping_list.append(is_overlapping)
         category_overlapping_mask = torch.tensor(
             category_overlapping_list, dtype=torch.long)
@@ -314,9 +278,6 @@ class MAFT_Plus(nn.Module):
             "instance_on": cfg.MODEL.MASK_FORMER.TEST.INSTANCE_ON,
             "panoptic_on": cfg.MODEL.MASK_FORMER.TEST.PANOPTIC_ON,
             "test_topk_per_image": cfg.TEST.DETECTIONS_PER_IMAGE,
-            "geometric_ensemble_alpha": cfg.MODEL.FC_CLIP.GEOMETRIC_ENSEMBLE_ALPHA,
-            "geometric_ensemble_beta": cfg.MODEL.FC_CLIP.GEOMETRIC_ENSEMBLE_BETA,
-            "ensemble_on_valid_mask": cfg.MODEL.FC_CLIP.ENSEMBLE_ON_VALID_MASK,
             "rc_weights": cfg.MODEL.rc_weights,
             "cdt_params": cfg.MODEL.cdt_params,
         }
@@ -355,6 +316,8 @@ class MAFT_Plus(nn.Module):
         images = [x["image"].to(self.device) for x in batched_inputs]
         images = [(x - self.pixel_mean) / self.pixel_std for x in images]
         images = ImageList.from_tensors(images, self.size_divisibility)
+        file_names = [x["file_name"] for x in batched_inputs]
+        file_names = [x.split('/')[-1].split('.')[0] for x in file_names]
 
         meta = batched_inputs[0]["meta"]
         text_classifier, num_templates = self.get_text_classifier(meta['dataname'])
@@ -417,13 +380,10 @@ class MAFT_Plus(nn.Module):
             mask_pred_results = outputs["pred_masks"]
 
 
-            # in_vocab is not used
+            # in_vocab is not used !!!
             # in_vocab_cls_results = mask_cls_results[..., :-1] # remove void
             # in_vocab_cls_results = in_vocab_cls_results.softmax(-1)
-
-            out_vocab_cls_results = out_vocab_cls_results[..., :-1] # remove void
-            out_vocab_cls_probs = out_vocab_cls_results.softmax(-1)
-            cls_results = out_vocab_cls_probs.log()
+            cls_results = out_vocab_cls_results[..., :-1] # remove void
 
             # This is used to filtering void predictions.
             is_void_prob = F.softmax(mask_cls_results, dim=-1)[..., -1:]
@@ -443,8 +403,8 @@ class MAFT_Plus(nn.Module):
             del outputs
 
             processed_results = []
-            for mask_cls_result, mask_pred_result, input_per_image, image_size in zip(
-                mask_cls_results, mask_pred_results, batched_inputs, images.image_sizes
+            for mask_cls_result, mask_pred_result, input_per_image, image_size, file_name in zip(
+                mask_cls_results, mask_pred_results, batched_inputs, images.image_sizes, file_names
             ):
                 height = input_per_image.get("height", image_size[0])
                 width = input_per_image.get("width", image_size[1])

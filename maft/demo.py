@@ -130,7 +130,7 @@ class MAFT_Plus_DEMO(nn.Module):
 
 
 
-        self.cdt = ContentDependentTransfer(d_model = cdt_params[0], nhead = cdt_params[1], )
+        self.cdt = ContentDependentTransfer(d_model = cdt_params[0], nhead = cdt_params[1], panoptic_on = panoptic_on)
         self.ma_loss = MA_Loss()  # BCELoss BCEWithLogitsLoss SmoothL1Loss
         self.rc_loss = Representation_Compensation()
         self.rc_weights = rc_weights

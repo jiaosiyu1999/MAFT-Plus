@@ -1,0 +1,29 @@
+# python train_net.py --config-file configs/panoptic/eval.yaml  --num-gpus 8 --eval-only
+
+_BASE_: ../maskformer2_R50_bs16_50ep.yaml
+MODEL:
+  WEIGHTS: /home/siyujiao/maft/maftp_l_pano.pth
+  META_ARCHITECTURE: "MAFT_Plus"
+  SEM_SEG_HEAD:
+    NAME: "FCCLIPHead"
+    NUM_CLASSES: 133
+  FC_CLIP:
+    CLIP_MODEL_NAME: "convnext_large_d_320"  
+    CLIP_PRETRAINED_WEIGHTS: "laion2b_s29b_b131k_ft_soup" 
+    EMBED_DIM: 768
+    GEOMETRIC_ENSEMBLE_ALPHA: -1.
+    GEOMETRIC_ENSEMBLE_BETA: -1.
+  MASK_FORMER:
+    TEST:
+      PANOPTIC_ON: True
+  rc_weights: 0.1
+
+INPUT:
+  DATASET_MAPPER_NAME: "coco_panoptic_lsj" # mask_former_semantic coco_panoptic_lsj
+
+DATASETS:
+  TRAIN: ("coco_seg_pan_voab",) 
+  TEST: ('openvocab_ade20k_panoptic_val', ) 
+
+
+OUTPUT_DIR: ./out/panoptic/evaluation

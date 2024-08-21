@@ -81,12 +81,19 @@ datasets/
 
 - #### Pretrained Weights
 
+  1. semantic
+     
   |Model|A-847| A-150| PC-459| PC-59| PAS-20 |Weights|
   |-----|--|-|-|-|--|---|
   |MAFTP-Base|13.8|34.6|16.2|57.5|95.4 |[maftp_b.pth](https://drive.google.com/file/d/1BeEeKOnWWIWIH-QWK_zLhAPUzCOnHuFG/view?usp=sharing) |
   |MAFTP-Large|15.1|36.1|21.6|59.4|96.5 |[maftp_l.pth](https://drive.google.com/file/d/1EQo5guVuKkSSZj4bv0FQN_4X9h_Rwfe5/view?usp=sharing) |
   
-
+  2. panoptic  
+     
+  ||PQ| SQ| RQ|Weights|
+  |-----|--|-|-|-|
+  |MAFTP-Large|27.1|73.5|32.9|[maftp_l_pano.pth](https://drive.google.com/file/d/1znk_uco8fwvbA0kndy4kGyVp22KbQr6g/view?usp=sharing) |
+  
 - #### Evaluation 
 
   <span id="4"></span>

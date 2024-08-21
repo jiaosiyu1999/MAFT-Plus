@@ -44,6 +44,7 @@ def setup_cfg(args):
     add_fcclip_config(cfg)
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
+    cfg.merge_from_list(['MODEL.META_ARCHITECTURE', "MAFT_Plus_DEMO"])
     cfg.freeze()
     return cfg
 

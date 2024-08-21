@@ -12,7 +12,7 @@ from maft.modeling.transformer_decoder.position_encoding import PositionEmbeddin
 
 class ShortCut_CrossAttention(nn.Module):
 
-    def __init__(self, d_model, nhead):
+    def __init__(self, d_model, nhead, panoptic_on = False):
         super().__init__()
         self.multihead_attn = nn.MultiheadAttention(d_model, nhead, dropout=0.0)
         self.norm = nn.LayerNorm(d_model)
@@ -21,8 +21,10 @@ class ShortCut_CrossAttention(nn.Module):
         self._reset_parameters()
 
         self.MLP = nn.Linear(d_model, d_model)
-        # nn.init.constant(self.MLP.weight, 0.0)
-        # nn.init.constant(self.MLP.bias, 0.0)
+        self.panoptic_on = panoptic_on
+        if panoptic_on:
+            nn.init.constant(self.MLP.weight, 0.0)
+            nn.init.constant(self.MLP.bias, 0.0)
 
 
     def _reset_parameters(self):
@@ -42,19 +44,22 @@ class ShortCut_CrossAttention(nn.Module):
                                    key=self.with_pos_embed(memory, pos),
                                    value=memory, attn_mask=memory_mask,
                                    key_padding_mask=memory_key_padding_mask)[0]
-        tgt = tgt + self.MLP(tgt2)
-        tgt = self.norm(tgt)
         
+        if self.panoptic_on:
+            tgt = tgt + self.norm(self.MLP(tgt2))
+        else:
+            tgt = self.norm(tgt + self.MLP(tgt2))
+
         return tgt
     
 
 
 class ContentDependentTransfer(nn.Module):
 
-    def __init__(self, d_model, nhead):
+    def __init__(self, d_model, nhead, panoptic_on):
         super().__init__()
         self.pe_layer = PositionEmbeddingSine(d_model//2, normalize=True)
-        self.cross_atten = ShortCut_CrossAttention(d_model = d_model, nhead = nhead)
+        self.cross_atten = ShortCut_CrossAttention(d_model = d_model, nhead = nhead, panoptic_on = panoptic_on)
 
     def visual_prediction_forward_convnext(self, x):
         batch, channel, h, w = x.shape
