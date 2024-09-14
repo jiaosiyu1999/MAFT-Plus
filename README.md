@@ -141,7 +141,7 @@ datasets/
 <span id="6"></span>
 ### Cite 
 
-If you find it helpful, you can cite our paper in your work.
+If this codebase is useful to you, please consider citing:
 ```
 @inproceedings{jiao2024collaborative,
   title={Collaborative Vision-Text Representation Optimizing for Open-Vocabulary Segmentation},
